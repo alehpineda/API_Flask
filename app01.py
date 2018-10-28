@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
 
@@ -18,6 +18,11 @@ stores = [
 
 # GET - used to send data back only
 # POST - used to receive data
+
+# Home
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 # POST /store data: {name:}
 @app.route('/store', methods=['POST'])
@@ -63,7 +68,7 @@ def create_item_in_store(name):
             return jsonify(new_item)
 
     return jsonify({'mensaje': 'Tienda no encontrada'})
-    
+
 
 # GET /store/<string:name>/item
 @app.route('/store/<string:name>/item')
