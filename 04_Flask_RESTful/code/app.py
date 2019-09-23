@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api
 
 app = Flask(__name__)
@@ -19,14 +19,22 @@ class Item(Resource):
         return {'item': None}, 404
 
     def post(self, name):
+        # get_json has two parameters force, silent
+        data = request.get_json()
         item = {
             'name': name,
-            'price': 12.00
+            'price': data['price']
         }
         items.append(item)
         return item, 201
 
+class ItemList(Resource):
+    def get(self):
+        return {'items': items}
+
 # as an api we don't need a decorator
 api.add_resource(Item, '/item/<string:name>')
+api.add_resource(ItemList, '/items')
 
-app.run(port=5000)
+# Disable debug in production
+app.run(port=5000, debug=True)
