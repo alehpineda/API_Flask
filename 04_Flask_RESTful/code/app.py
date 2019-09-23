@@ -9,16 +9,15 @@ items = []
 
 class Item(Resource):
     def get(self, name):
-        # items is a list of dictionaries
-        for item in items:
-            # if the name in the dict equals the name of get
-            if item['name'] == name:
-                # return the dict
-                # we don't need jsonify, restful takes care of it
-                return item
-        return {'item': None}, 404
+        # filter(lambda, iterator) return filter object.
+        # filter object is a generator
+        item = next(filter(lambda x: x['name'] == name, items), None)
+        # return item, and code using terniary operators
+        return {'item': item}, 200 if item else 404
 
     def post(self, name):
+        if next(filter(lambda x: x['name'] == name, items), None):
+            return {'message': "An item with name '{}' already exists.".format(name)}, 400
         # get_json has two parameters force, silent
         data = request.get_json()
         item = {
